@@ -1,0 +1,31 @@
+[Unit]
+Description=Shopify Real-Time Restock & Price Drop Discord Sentinel Daemon
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/shopify-restock-bot
+EnvironmentFile=/opt/shopify-restock-bot/.env
+ExecStart=/opt/shopify-restock-bot/.venv/bin/python main.py --daemon
+
+# Reliability & Auto-Restart Policies
+Restart=always
+RestartSec=10
+KillMode=process
+TimeoutStopSec=30
+
+# Sandboxing & Security Hardening
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=shopify-sentinel
+
+[Install]
+WantedBy=multi-user.target
